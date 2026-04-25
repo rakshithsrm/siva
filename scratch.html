@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#0a0608"/>
+<title>A Letter For You — Sister</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0608;
+  --gold:#d4af66;--gold-lt:#f0d080;
+  --rose:#c8566a;--cream:#f5ede0;
+  --muted:#7a6a5a;--text:#e8ddd0;
+  --border:rgba(212,175,102,0.18);
+  --fs-xs:clamp(.58rem,1.2vw,.68rem);
+  --fs-sm:clamp(.75rem,1.5vw,.88rem);
+  --fs-md:clamp(1rem,2.2vw,1.2rem);
+  --fs-lg:clamp(1.5rem,3.8vw,2.4rem);
+  --fs-xl:clamp(2rem,5vw,3.2rem);
+  --sp-sm:clamp(8px,1.8vw,14px);
+  --sp-md:clamp(14px,2.8vw,24px);
+  --sp-lg:clamp(22px,4vw,44px);
+}
+html{scroll-behavior:smooth;}
+body{
+  min-height:100vh;
+  background:var(--bg);
+  font-family:'Jost',sans-serif;
+  color:var(--text);
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+/* grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:150px;opacity:.4;
+}
+
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 80%,rgba(200,86,106,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 20%,rgba(212,175,102,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 60% at 50% 50%,rgba(120,60,160,.04) 0%,transparent 70%);}
+
+/* floating particles */
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.particle{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--gold);opacity:0;
+  animation:floatUp var(--dur) ease-in var(--delay) infinite;
+}
+@keyframes floatUp{
+  0%{opacity:0;transform:translateY(0) scale(0);}
+  10%{opacity:.5;transform:translateY(-10px) scale(1);}
+  90%{opacity:.15;}
+  100%{opacity:0;transform:translateY(-100px) scale(0);}
+}
+
+/* back btn */
+.back-btn{
+  position:fixed;top:clamp(14px,3vh,24px);left:clamp(14px,3vw,28px);z-index:60;
+  display:flex;align-items:center;gap:8px;padding:10px 18px;
+  border:1px solid rgba(212,175,102,.2);border-radius:99px;
+  background:rgba(10,6,8,.85);color:var(--gold);
+  font-family:'Jost',sans-serif;font-size:var(--fs-xs);font-weight:300;
+  letter-spacing:.18em;text-transform:uppercase;
+  cursor:pointer;text-decoration:none;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:border-color .3s,background .3s,transform .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.back-btn:hover{border-color:rgba(212,175,102,.5);background:rgba(212,175,102,.08);transform:translateY(-1px);}
+.back-btn svg{width:14px;height:14px;fill:none;stroke:var(--gold);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+/* PAGE */
+.page{
+  position:relative;z-index:10;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:clamp(80px,12vh,120px) var(--sp-md) clamp(50px,8vh,90px);
+  gap:var(--sp-lg);
+}
+
+/* header */
+.header{
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:var(--sp-sm);
+  animation:riseIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes riseIn{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+.eyebrow-row{display:flex;align-items:center;gap:clamp(10px,2.5vw,20px);}
+.eline{height:1px;width:clamp(24px,6vw,60px);background:linear-gradient(90deg,transparent,var(--gold));}
+.eline.r{background:linear-gradient(90deg,var(--gold),transparent);}
+.edot{color:var(--gold);font-size:.9rem;filter:drop-shadow(0 0 5px var(--gold));}
+.eyebrow{font-size:var(--fs-xs);font-weight:200;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:var(--fs-xl);font-weight:300;color:var(--cream);line-height:1.1;}
+.page-title em{font-style:italic;color:var(--gold-lt);text-shadow:0 0 28px rgba(212,175,102,.4);}
+.page-hint{
+  font-size:var(--fs-xs);font-weight:200;letter-spacing:.2em;
+  color:var(--muted);text-transform:uppercase;
+  animation:blink 2.5s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+/* ══ SCRATCH WRAPPER ══ */
+.scratch-wrapper{
+  position:relative;
+  width:100%;max-width:clamp(300px,88vw,600px);
+  animation:riseIn .9s cubic-bezier(.16,1,.3,1) .2s both;
+}
+
+/* LETTER */
+.letter{
+  background:linear-gradient(160deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.015) 100%);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:clamp(28px,5vw,54px) clamp(24px,4vw,48px);
+  box-shadow:0 0 0 1px rgba(0,0,0,.4),0 40px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(212,175,102,.08);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  position:relative;overflow:hidden;
+}
+.letter::before,.letter::after{
+  content:'';position:absolute;
+  width:clamp(18px,4vw,30px);height:clamp(18px,4vw,30px);
+  border-color:rgba(212,175,102,.25);border-style:solid;
+}
+.letter::before{top:12px;left:12px;border-width:1px 0 0 1px;}
+.letter::after{bottom:12px;right:12px;border-width:0 1px 1px 0;}
+
+.letter-eyebrow{
+  font-size:var(--fs-xs);font-weight:200;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--gold);
+  margin-bottom:clamp(14px,3vw,24px);
+  display:flex;align-items:center;gap:10px;
+}
+.letter-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(212,175,102,.3),transparent);}
+
+.letter-salutation{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.3rem,3.5vw,1.9rem);
+  font-weight:300;font-style:italic;
+  color:var(--cream);
+  margin-bottom:clamp(18px,3.5vw,30px);
+  line-height:1.2;
+}
+
+.letter-body{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(.95rem,2.2vw,1.15rem);
+  font-weight:300;font-style:italic;
+  color:rgba(232,221,208,.85);
+  line-height:1.95;
+  display:flex;flex-direction:column;
+  gap:clamp(12px,2.5vw,20px);
+}
+.letter-body p{
+  opacity:0;transform:translateY(12px);
+  transition:opacity .9s ease,transform .9s ease;
+}
+.letter-body p.revealed{opacity:1;transform:translateY(0);}
+
+.letter-divider{
+  width:50px;height:1px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  opacity:0;transition:opacity .9s ease;
+}
+.letter-divider.revealed{opacity:1;}
+
+.letter-sign{
+  margin-top:clamp(18px,4vw,34px);
+  display:flex;flex-direction:column;gap:4px;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .9s ease,transform .9s ease;
+}
+.letter-sign.revealed{opacity:1;transform:translateY(0);}
+.sign-label{font-size:var(--fs-xs);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:200;}
+.sign-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.1rem,2.8vw,1.5rem);
+  font-style:italic;color:var(--gold-lt);
+  text-shadow:0 0 20px rgba(212,175,102,.3);
+}
+
+/* ══ SCRATCH CANVAS ══ */
+#scratchCanvas{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  border-radius:12px;
+  cursor:crosshair;
+  touch-action:none;
+  z-index:5;
+  transition:opacity .8s ease;
+}
+#scratchCanvas.hidden{opacity:0;pointer-events:none;}
+
+/* scratch hint */
+.scratch-label{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:6;text-align:center;
+  pointer-events:none;
+  transition:opacity .5s ease;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.scratch-icon{
+  font-size:clamp(2.2rem,7vw,3.2rem);
+  animation:wiggle 1.5s ease-in-out infinite;
+}
+@keyframes wiggle{
+  0%,100%{transform:rotate(-18deg) translateX(0);}
+  30%{transform:rotate(18deg) translateX(8px);}
+  70%{transform:rotate(-12deg) translateX(-5px);}
+}
+.scratch-text{
+  font-size:var(--fs-xs);letter-spacing:.25em;
+  text-transform:uppercase;color:rgba(255,255,255,.75);font-weight:300;
+}
+
+/* progress */
+.progress-wrap{
+  width:100%;max-width:clamp(300px,88vw,600px);
+  opacity:0;transition:opacity .4s ease;
+  display:flex;flex-direction:column;gap:8px;
+}
+.progress-wrap.show{opacity:1;}
+.progress-label{
+  font-size:var(--fs-xs);letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);
+  text-align:center;font-weight:200;
+}
+.progress-track{height:2px;background:rgba(212,175,102,.1);border-radius:99px;overflow:hidden;}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--gold-lt));
+  border-radius:99px;
+  transition:width .15s ease;
+  box-shadow:0 0 8px rgba(212,175,102,.5);
+}
+
+/* celebrate canvas */
+#celebrateCanvas{position:fixed;inset:0;z-index:20;pointer-events:none;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:480px){
+  .page{padding-top:72px;gap:clamp(14px,3vw,20px);}
+  .letter{padding:22px 18px;}
+  .back-btn{padding:8px 12px;font-size:.55rem;}
+  .letter-body{font-size:.9rem;line-height:1.85;}
+}
+@media(min-width:1200px){
+  .scratch-wrapper{max-width:680px;}
+  .letter-body{font-size:1.2rem;}
+}
+@media(hover:none){
+  .back-btn:hover{transform:none;}
+}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="particles" id="particles"></div>
+<canvas id="celebrateCanvas"></canvas>
+
+<a class="back-btn" href="nav.html">
+  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  Back
+</a>
+
+<div class="page">
+  <div class="header">
+    <div class="eyebrow-row">
+      <div class="eline"></div><span class="edot">✦</span>
+      <span class="eyebrow">Only For Her</span>
+      <span class="edot">✦</span><div class="eline r"></div>
+    </div>
+    <h1 class="page-title">The Letter You <em>Deserved</em></h1>
+    <p class="page-hint" id="hintText">✦ scratch to reveal ✦</p>
+  </div>
+
+  <div class="scratch-wrapper" id="scratchWrapper">
+
+    <div class="letter" id="letter">
+      <div class="letter-eyebrow">✦ A letter, long overdue</div>
+      <div class="letter-salutation">Dear Sister,</div>
+
+      <div class="letter-body" id="letterBody">
+
+        <p>There are words I have been carrying for a long time now — words I should have said out loud, long before this moment. But I was afraid, or maybe I just didn't know how. So I am writing them here, where I can't take them back.</p>
+
+        <div class="letter-divider"></div>
+
+        <p>You stayed. Even after I hurt you — and I did hurt you, more than once, more than I probably even know — you stayed. You didn't walk away. You didn't give up on me. And I want you to know that I see that. I have always seen it. I just wasn't brave enough to say thank you the way you deserved.</p>
+
+        <div class="letter-divider"></div>
+
+        <p>What breaks my heart quietly is knowing that you carried so much alone. Your sadness, your hard days, your silent storms — you never brought them to me. You protected me from your pain while still carrying mine without complaint. That was never fair. You deserved someone who asked. I am sorry I didn't ask more.</p>
+
+        <div class="letter-divider"></div>
+
+        <p>I wish I had found you sooner. I wish that day in 8th standard, instead of sitting in silence for two whole years, I had walked up to you and said — <em>"I think you are meant to be my Sister."</em> Because you were. You always were. I just took too long to see it.</p>
+
+        <div class="letter-divider"></div>
+
+        <p>Today, on your birthday, I want you to know this clearly and completely — <em>you are my everything.</em> Not just a friend. Not just someone I call Sister. You are the person who made me believe that some bonds don't need blood to be real. You are the reason I know what it feels like to be truly looked after.</p>
+
+        <div class="letter-divider"></div>
+
+        <p>I am sorry for every time I made you question if I valued you. I am sorry for every hurt, every silence, every moment you deserved better and didn't get it from me. You never stopped showing up anyway — and that is a kind of love I will spend the rest of my life trying to be worthy of.</p>
+
+        <div class="letter-divider"></div>
+
+        <p style="color:var(--gold-lt);">Happy Birthday, Sister. This letter is only a small piece of what you mean to me — but it is the most honest thing I know how to give you today. 🌸</p>
+
+      </div>
+
+      <div class="letter-sign" id="letterSign">
+        <div class="sign-label">With all my heart —</div>
+        <div class="sign-name">Your Rakshith 💛</div>
+      </div>
+    </div>
+
+    <canvas id="scratchCanvas"></canvas>
+
+    <div class="scratch-label" id="scratchLabel">
+      <div class="scratch-icon">💛</div>
+      <div class="scratch-text">Scratch to open your letter</div>
+    </div>
+
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label" id="progressLabel">Keep scratching...</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+</div>
+
+<script>
+/* floating particles */
+(function(){
+  const c = document.getElementById('particles');
+  for(let i=0;i<28;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    p.style.setProperty('--dur',(4+Math.random()*7)+'s');
+    p.style.setProperty('--delay',(Math.random()*9)+'s');
+    p.style.left=(Math.random()*100)+'%';
+    p.style.bottom=(Math.random()*30)+'%';
+    p.style.width=p.style.height=(1+Math.random()*2.5)+'px';
+    c.appendChild(p);
+  }
+})();
+
+/* scratch logic */
+const letter   = document.getElementById('letter');
+const canvas   = document.getElementById('scratchCanvas');
+const ctx      = canvas.getContext('2d');
+const label    = document.getElementById('scratchLabel');
+const pw       = document.getElementById('progressWrap');
+const pf       = document.getElementById('progressFill');
+const pl       = document.getElementById('progressLabel');
+const hint     = document.getElementById('hintText');
+
+let scratching = false;
+let done       = false;
+let lastX, lastY;
+
+function resize(){
+  const r = letter.getBoundingClientRect();
+  canvas.width  = r.width;
+  canvas.height = r.height;
+  if(!done) drawCover();
+}
+
+function drawCover(){
+  const w = canvas.width, h = canvas.height;
+
+  // dark warm gradient
+  const g = ctx.createLinearGradient(0,0,w,h);
+  g.addColorStop(0,'#1c0e12');
+  g.addColorStop(.4,'#2a1a0c');
+  g.addColorStop(.7,'#1e1208');
+  g.addColorStop(1,'#160c10');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,w,h);
+
+  // subtle gold dots
+  ctx.save();
+  for(let i=0;i<140;i++){
+    ctx.globalAlpha = 0.04 + Math.random()*0.04;
+    ctx.beginPath();
+    ctx.arc(Math.random()*w, Math.random()*h, Math.random()*1.8, 0, Math.PI*2);
+    ctx.fillStyle='#d4af66';
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // envelope silhouette
+  const cx=w/2, cy=h/2;
+  const ew=Math.min(w*.38,170), eh=ew*.62;
+  ctx.save();
+  ctx.globalAlpha=.14;
+  ctx.strokeStyle='#d4af66';
+  ctx.lineWidth=1.5;
+  roundRect(ctx, cx-ew/2, cy-eh/2-20, ew, eh, 4);
+  ctx.stroke();
+  // flap line
+  ctx.beginPath();
+  ctx.moveTo(cx-ew/2, cy-eh/2-20);
+  ctx.lineTo(cx, cy-4);
+  ctx.lineTo(cx+ew/2, cy-eh/2-20);
+  ctx.stroke();
+  ctx.restore();
+
+  // wax seal
+  ctx.save();
+  ctx.globalAlpha=.3;
+  ctx.beginPath();
+  ctx.arc(cx, cy+eh/2-12, 26, 0, Math.PI*2);
+  ctx.fillStyle='#c8566a';
+  ctx.fill();
+  ctx.strokeStyle='rgba(212,175,102,.5)';
+  ctx.lineWidth=1;
+  ctx.stroke();
+  ctx.globalAlpha=.65;
+  ctx.font=`${Math.min(16,w*.04)}px serif`;
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillStyle='#f0d080';
+  ctx.fillText('✦', cx, cy+eh/2-12);
+  ctx.restore();
+
+  // hint text on cover
+  ctx.save();
+  ctx.globalAlpha=.22;
+  ctx.font=`200 ${Math.min(11,w*.025)}px 'Jost',sans-serif`;
+  ctx.letterSpacing='0.25em';
+  ctx.textAlign='center';
+  ctx.fillStyle='#e8ddd0';
+  ctx.fillText('S C R A T C H   T O   O P E N', cx, h-clamp(24,h*.06,36));
+  ctx.restore();
+
+  // gold border glow
+  ctx.save();
+  ctx.globalAlpha=.12;
+  ctx.strokeStyle='#d4af66';
+  ctx.lineWidth=1.5;
+  ctx.strokeRect(1,1,w-2,h-2);
+  ctx.restore();
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function clamp(v,a,b){return Math.min(Math.max(v,a),b);}
+
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  const sx=canvas.width/r.width, sy=canvas.height/r.height;
+  if(e.touches) return {x:(e.touches[0].clientX-r.left)*sx, y:(e.touches[0].clientY-r.top)*sy};
+  return {x:(e.clientX-r.left)*sx, y:(e.clientY-r.top)*sy};
+}
+
+function scratchAt(x,y){
+  ctx.globalCompositeOperation='destination-out';
+  const r = clamp(canvas.width*.13, 44, 90);
+  ctx.beginPath();
+  ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,0,0,1)';
+  ctx.fill();
+  // draw line if moving
+  if(lastX !== undefined){
+    ctx.lineWidth=r*2;
+    ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(lastX,lastY);
+    ctx.lineTo(x,y);
+    ctx.stroke();
+  }
+  lastX=x; lastY=y;
+  ctx.globalCompositeOperation='source-over';
+}
+
+let sampleCount=0;
+function checkReveal(){
+  sampleCount++;
+  if(sampleCount % 3 !== 0) return;
+  const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  let gone=0;
+  const total = canvas.width*canvas.height;
+  for(let i=3;i<data.length;i+=4) if(data[i]<128) gone++;
+  const pct = gone/total;
+  const p = Math.min(pct*100,100);
+  pf.style.width = p+'%';
+  if(p>8){ pw.classList.add('show'); label.style.opacity='0'; }
+  if(p>40) pl.textContent='Almost there... 🌸';
+  if(p>=35 && !done) reveal();
+}
+
+function reveal(){
+  done=true;
+  canvas.classList.add('hidden');
+  label.style.opacity='0';
+  pw.style.opacity='0';
+  hint.style.animation='none';
+  hint.style.opacity='1';
+  hint.textContent='✦ for you, always ✦';
+
+  const els = document.querySelectorAll('#letterBody p, #letterBody .letter-divider');
+  els.forEach((el,i)=>{
+    setTimeout(()=>el.classList.add('revealed'), i*200);
+  });
+  setTimeout(()=>{
+    document.getElementById('letterSign').classList.add('revealed');
+  }, els.length*200+300);
+
+  setTimeout(confetti, 500);
+}
+
+canvas.addEventListener('mousedown', e=>{scratching=true; lastX=undefined; const p=getPos(e); scratchAt(p.x,p.y); checkReveal();});
+canvas.addEventListener('mousemove', e=>{ if(!scratching||done) return; const p=getPos(e); scratchAt(p.x,p.y); checkReveal();});
+canvas.addEventListener('mouseup',  ()=>{scratching=false;lastX=undefined;});
+canvas.addEventListener('mouseleave',()=>{scratching=false;lastX=undefined;});
+canvas.addEventListener('touchstart',e=>{e.preventDefault();scratching=true;lastX=undefined;const p=getPos(e);scratchAt(p.x,p.y);checkReveal();},{passive:false});
+canvas.addEventListener('touchmove', e=>{e.preventDefault();if(!scratching||done)return;const p=getPos(e);scratchAt(p.x,p.y);checkReveal();},{passive:false});
+canvas.addEventListener('touchend',  ()=>{scratching=false;lastX=undefined;});
+
+resize();
+window.addEventListener('resize', resize);
+
+/* confetti */
+function confetti(){
+  const cel=document.getElementById('celebrateCanvas');
+  const cctx=cel.getContext('2d');
+  cel.width=window.innerWidth;
+  cel.height=window.innerHeight;
+  const colors=['#d4af66','#f0d080','#c8566a','#ffffff','#ffd6e7','#b8c8ff','#ffe4b5'];
+  const ps=[];
+  for(let i=0;i<130;i++){
+    ps.push({
+      x:Math.random()*cel.width,
+      y:-10-Math.random()*180,
+      w:5+Math.random()*9,h:3+Math.random()*5,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      rot:Math.random()*Math.PI*2,
+      rs:(Math.random()-.5)*.18,
+      vx:(Math.random()-.5)*3.5,
+      vy:1.5+Math.random()*3,
+      alpha:1
+    });
+  }
+  let frame=0;
+  function loop(){
+    cctx.clearRect(0,0,cel.width,cel.height);
+    ps.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.045; p.rot+=p.rs;
+      if(frame>80) p.alpha-=.014;
+      if(p.alpha<=0) return;
+      cctx.save();
+      cctx.globalAlpha=Math.max(0,p.alpha);
+      cctx.translate(p.x,p.y);cctx.rotate(p.rot);
+      cctx.fillStyle=p.color;
+      cctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      cctx.restore();
+    });
+    frame++;
+    if(frame<165) requestAnimationFrame(loop);
+    else cctx.clearRect(0,0,cel.width,cel.height);
+  }
+  loop();
+}
+</script>
+</body>
+</html>

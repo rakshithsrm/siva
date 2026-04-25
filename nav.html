@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+<meta name="theme-color" content="#0a0608"/>
+<title>A Birthday Surprise</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════
+   RESET & ROOT
+═══════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  /* — palette — */
+  --bg:#0a0608;
+  --border:rgba(212,175,102,0.18);
+  --gold:#d4af66;
+  --gold-lt:#f0d080;
+  --rose:#c8566a;
+  --cream:#f5ede0;
+  --muted:#7a6a5a;
+  --text:#e8ddd0;
+
+  /* — fluid type scale —
+     Device bands (reference px at 1x):
+       xs  320px  (tiny phones)
+       sm  480px  (normal phones)
+       md  768px  (tablets/large phones)
+       lg  1280px (laptops)
+       xl  1920px (desktops / Full-HD)
+       2xl 2560px (QHD monitors)
+       4k  3840px (TV / 4K)
+  */
+  --fs-xs:    clamp(.55rem, .4rem + .5vw,  .75rem);
+  --fs-sm:    clamp(.68rem, .5rem + .7vw,  1rem);
+  --fs-base:  clamp(.80rem, .55rem + .95vw, 1.25rem);
+  --fs-md:    clamp(.95rem, .6rem + 1.2vw,  1.6rem);
+  --fs-lg:    clamp(1.2rem, .7rem + 2vw,    3rem);
+  --fs-xl:    clamp(1.6rem, .6rem + 3.5vw,  5rem);
+  --fs-hero:  clamp(1.9rem, .4rem + 5vw,    7.5rem);
+
+  /* — fluid spacing — */
+  --sp-2xs: clamp(4px,   .3rem + .4vw,  12px);
+  --sp-xs:  clamp(6px,   .3rem + .7vw,  20px);
+  --sp-sm:  clamp(10px,  .4rem + 1.2vw, 36px);
+  --sp-md:  clamp(16px,  .5rem + 2vw,   56px);
+  --sp-lg:  clamp(24px,  .5rem + 3vw,   80px);
+  --sp-xl:  clamp(36px,  .5rem + 4vw,   110px);
+
+  /* — button sizing — */
+  --btn-min-w:  clamp(100px, 8rem + 4vw, 220px);
+  --btn-pad-y:  clamp(12px, .5rem + 1vw, 28px);
+  --btn-pad-x:  clamp(14px, .5rem + 1.5vw, 38px);
+  --btn-radius: clamp(3px, .3vw, 8px);
+  --btn-icon:   clamp(1.2rem, .8rem + 2vw, 3.2rem);
+
+  /* — eyebrow line — */
+  --eline-w:  clamp(24px, 2rem + 3vw, 120px);
+
+  /* — max content width — */
+  --max-nav:  clamp(400px, 80vw, 1100px);
+}
+
+/* ═══════════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════════ */
+html{
+  height:100%;
+  font-size:16px; /* anchor for rem; scales via clamp() */
+}
+body{
+  min-height:100%;
+  overflow-x:hidden;
+  overflow-y:scroll;
+  background:var(--bg);
+  font-family:'Jost',sans-serif;
+  color:var(--text);
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+/* ── Custom gold scrollbar ── */
+body::-webkit-scrollbar{width:5px;}
+body::-webkit-scrollbar-track{background:rgba(255,255,255,.03);}
+body::-webkit-scrollbar-thumb{
+  background:linear-gradient(to bottom,transparent,rgba(212,175,102,.45),transparent);
+  border-radius:99px;
+}
+body::-webkit-scrollbar-thumb:hover{background:rgba(212,175,102,.7);}
+/* Firefox */
+body{scrollbar-width:thin;scrollbar-color:rgba(212,175,102,.4) transparent;}
+
+/* ═══════════════════════════════════════════════════
+   ATMOSPHERE
+═══════════════════════════════════════════════════ */
+/* film grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:150px;opacity:.4;
+}
+
+/* ambient colour spill */
+.ambient{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 85%,rgba(200,86,106,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 35% at 85% 15%,rgba(212,175,102,.06) 0%,transparent 70%);
+}
+
+/* subtle deco rings */
+.deco-lines{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.deco-lines::before,.deco-lines::after{
+  content:'';position:absolute;border-radius:50%;
+  border:1px solid rgba(212,175,102,.04);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.deco-lines::before{width:min(700px,140vw);height:min(700px,140vw);}
+.deco-lines::after {width:min(1100px,200vw);height:min(1100px,200vw);}
+
+/* ═══════════════════════════════════════════════════
+   PANEL — the centred card
+═══════════════════════════════════════════════════ */
+.panel{
+  position:relative;z-index:10;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:var(--sp-sm);
+  padding:var(--sp-lg) var(--sp-md);
+  animation:fadeRise .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes fadeRise{
+  from{opacity:0;transform:translateY(clamp(16px,3vw,48px));}
+  to  {opacity:1;transform:translateY(0);}
+}
+
+/* ═══════════════════════════════════════════════════
+   EYEBROW
+═══════════════════════════════════════════════════ */
+.post-eyebrow{
+  display:flex;align-items:center;
+  gap:clamp(8px,1.5vw,24px);
+}
+.post-eline{
+  width:var(--eline-w);height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+.post-eline.r{background:linear-gradient(90deg,var(--gold),transparent);}
+.post-etext{
+  font-size:var(--fs-xs);
+  letter-spacing:clamp(.2em,.5vw,.4em);
+  text-transform:uppercase;color:var(--gold);font-weight:200;
+  white-space:nowrap;
+}
+
+/* ═══════════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════════ */
+.post-divider{
+  width:clamp(50px,12vw,160px);height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+/* ═══════════════════════════════════════════════════
+   HEADING
+═══════════════════════════════════════════════════ */
+.post-heading{
+  font-family:'Cormorant Garamond',serif;
+  font-size:var(--fs-hero);
+  font-weight:300;color:var(--cream);
+  text-align:center;line-height:1.1;
+  letter-spacing:clamp(-.02em, -.01em, 0);
+}
+.post-heading em{font-style:italic;color:var(--gold-lt);}
+
+/* ═══════════════════════════════════════════════════
+   SUBTITLE
+═══════════════════════════════════════════════════ */
+.post-sub{
+  font-size:var(--fs-md);font-weight:200;
+  letter-spacing:clamp(.04em,.15vw,.1em);
+  color:var(--muted);
+  text-align:center;
+  max-width:clamp(280px, 50vw, 720px);
+  line-height:1.8;
+}
+
+/* ═══════════════════════════════════════════════════
+   NAV GRID
+═══════════════════════════════════════════════════ */
+.nav-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:clamp(8px,1.5vw,24px);
+  justify-content:center;
+  width:100%;
+  max-width:var(--max-nav);
+  margin-top:var(--sp-xs);
+}
+
+/* ═══════════════════════════════════════════════════
+   BUTTON
+═══════════════════════════════════════════════════ */
+.nav-btn{
+  flex:1 1 var(--btn-min-w);
+  max-width:clamp(130px, 16vw, 260px);
+  padding:var(--btn-pad-y) var(--btn-pad-x);
+  border:1px solid var(--border);
+  border-radius:var(--btn-radius);
+  background:rgba(255,255,255,.025);
+  color:var(--cream);
+  font-family:'Jost',sans-serif;
+  font-size:var(--fs-xs);
+  font-weight:400;
+  letter-spacing:clamp(.15em,.3vw,.3em);
+  text-transform:uppercase;
+  cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:border-color .3s,background .3s,transform .15s,box-shadow .3s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.nav-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(212,175,102,.12),transparent 60%);
+  opacity:0;transition:opacity .3s;
+}
+.nav-btn::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  transform:scaleX(0);transition:transform .4s ease;
+}
+.nav-btn-icon{
+  display:block;
+  font-size:var(--btn-icon);
+  margin-bottom:clamp(4px,.5vw,12px);
+}
+.nav-btn-label{display:block;}
+
+/* hover — pointer devices only */
+@media(hover:hover) and (pointer:fine){
+  .nav-btn:hover{
+    border-color:rgba(212,175,102,.5);
+    background:rgba(212,175,102,.06);
+    transform:translateY(-3px);
+    box-shadow:0 8px 32px rgba(212,175,102,.15);
+  }
+  .nav-btn:hover::before{opacity:1;}
+  .nav-btn:hover::after{transform:scaleX(1);}
+}
+.nav-btn:active{transform:translateY(-1px);}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE OVERRIDES
+   Ordered from smallest to largest so cascade is clean
+═══════════════════════════════════════════════════ */
+
+/* ── Tiny phones 320–359px ────────────────────────── */
+@media(max-width:359px){
+  .nav-btn{flex:1 1 100%;max-width:100%;}
+  .post-sub{max-width:95vw;}
+}
+
+/* ── Normal phones 360–479px ─────────────────────── */
+@media(min-width:360px) and (max-width:479px){
+  .nav-btn{flex:1 1 calc(50% - 8px);max-width:none;}
+}
+
+/* ── Large phones / small tablets 480–767px ──────── */
+@media(min-width:480px) and (max-width:767px){
+  .nav-btn{flex:1 1 calc(33% - 12px);max-width:none;}
+}
+
+/* ── Tablets 768–1023px ───────────────────────────── */
+@media(min-width:768px) and (max-width:1023px){
+  :root{--max-nav:680px;}
+  .nav-btn{flex:1 1 clamp(120px,18vw,180px);}
+}
+
+/* ── Laptops 1024–1439px ──────────────────────────── */
+@media(min-width:1024px) and (max-width:1439px){
+  :root{--max-nav:820px;}
+}
+
+/* ── Desktops / Full-HD 1440–2559px ──────────────── */
+@media(min-width:1440px) and (max-width:2559px){
+  :root{--max-nav:1000px;}
+  .post-sub{max-width:640px;}
+}
+
+/* ── QHD & 4K / Large TV 2560px+ ─────────────────── */
+@media(min-width:2560px){
+  html{font-size:clamp(16px, .5rem + .7vw, 32px);}
+  :root{
+    --max-nav:1400px;
+    --eline-w:clamp(80px,5vw,180px);
+  }
+  .post-sub{max-width:900px;}
+  .deco-lines::before{width:min(1200px,60vw);height:min(1200px,60vw);}
+  .deco-lines::after {width:min(2000px,90vw);height:min(2000px,90vw);}
+}
+
+/* ── 4K TVs 3840px+ ───────────────────────────────── */
+@media(min-width:3840px){
+  html{font-size:clamp(24px,.6rem + .9vw,48px);}
+  :root{
+    --max-nav:1800px;
+    --sp-lg:clamp(80px,4vw,160px);
+  }
+}
+
+/* ── Landscape short screens (phones rotated) ──────── */
+@media(max-height:500px) and (orientation:landscape){
+  .panel{
+    gap:clamp(8px,2vh,20px);
+    padding:clamp(10px,2vh,20px) var(--sp-md);
+    min-height:auto;
+  }
+  .post-heading{font-size:clamp(1.3rem,5vh,2.2rem);}
+  .post-sub{display:none;}           /* hide subtitle in tight landscape */
+  .nav-buttons{flex-wrap:nowrap;}
+  .nav-btn{flex:1 1 auto;max-width:none;}
+  .nav-btn-icon{font-size:clamp(1rem,4vh,1.6rem);margin-bottom:4px;}
+}
+
+/* ── 5-inch physical device guard (≈ 320–360 CSS px) ─ */
+@media(max-width:380px) and (max-height:680px){
+  .post-heading{font-size:clamp(1.55rem,9vw,2rem);}
+  .panel{padding:20px 14px;}
+  .nav-btn{padding:12px 10px;}
+}
+
+/* ── Very tall narrow screens ─────────────────────── */
+@media(min-height:1000px) and (max-width:600px){
+  .panel{gap:var(--sp-md);}
+}
+
+/* ── Print / fallback ──────────────────────────────── */
+@media print{
+  body{background:#fff;color:#000;}
+  .ambient,.deco-lines,body::before{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="deco-lines"></div>
+
+<div class="panel">
+  <div class="post-eyebrow">
+    <div class="post-eline"></div>
+    <span class="post-etext">A Night to Remember</span>
+    <div class="post-eline r"></div>
+  </div>
+
+  <div class="post-divider"></div>
+
+  <div class="post-heading">
+    Happy Birthday,<br/><em>Sivakami</em> 🎂✨
+  </div>
+
+  <p class="post-sub">
+    The night sky is yours tonight.<br/>Where would you like to go next?
+  </p>
+
+  <div class="post-divider"></div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="window.location.href='night-sky.html'">
+      <span class="nav-btn-icon">🌌</span>
+      <span class="nav-btn-label">Night Sky</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='memories.html'">
+      <span class="nav-btn-icon">📸</span>
+      <span class="nav-btn-label">Memories</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='timeline.html'">
+      <span class="nav-btn-icon">⏳</span>
+      <span class="nav-btn-label">Timeline</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='scratch.html'">
+      <span class="nav-btn-icon">💌</span>
+      <span class="nav-btn-label">A Letter</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='promise-jar.html'">
+      <span class="nav-btn-icon">🫙</span>
+      <span class="nav-btn-label">Promises</span>
+    </button>
+  </div>
+</div>
+</body>
+</html>

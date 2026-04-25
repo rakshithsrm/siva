@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#0a0608"/>
+<title>Promise Jar — For You</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0608;
+  --gold:#d4af66;--gold-lt:#f0d080;
+  --rose:#c8566a;--cream:#f5ede0;
+  --muted:#7a6a5a;--text:#e8ddd0;
+  --border:rgba(212,175,102,0.18);
+  --fs-xs:clamp(.58rem,1.2vw,.68rem);
+  --fs-sm:clamp(.75rem,1.5vw,.88rem);
+  --fs-md:clamp(1rem,2.2vw,1.15rem);
+  --fs-lg:clamp(1.5rem,3.8vw,2.4rem);
+  --fs-xl:clamp(2rem,5vw,3.2rem);
+  --sp-sm:clamp(8px,1.8vw,14px);
+  --sp-md:clamp(14px,2.8vw,24px);
+  --sp-lg:clamp(22px,4vw,44px);
+}
+html{scroll-behavior:smooth;}
+body{
+  min-height:100vh;
+  background:var(--bg);
+  font-family:'Jost',sans-serif;
+  color:var(--text);
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+/* grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:150px;opacity:.4;
+}
+
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 80%,rgba(200,86,106,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 20%,rgba(212,175,102,.05) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 55% at 50% 50%,rgba(100,60,160,.03) 0%,transparent 70%);}
+
+/* floating particles */
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.particle{
+  position:absolute;border-radius:50%;
+  background:var(--gold);opacity:0;
+  animation:floatUp var(--dur) ease-in var(--delay) infinite;
+}
+@keyframes floatUp{
+  0%{opacity:0;transform:translateY(0) scale(0);}
+  10%{opacity:.45;transform:translateY(-8px) scale(1);}
+  90%{opacity:.1;}
+  100%{opacity:0;transform:translateY(-90px) scale(0);}
+}
+
+/* back btn */
+.back-btn{
+  position:fixed;top:clamp(14px,3vh,24px);left:clamp(14px,3vw,28px);z-index:60;
+  display:flex;align-items:center;gap:8px;padding:10px 18px;
+  border:1px solid rgba(212,175,102,.2);border-radius:99px;
+  background:rgba(10,6,8,.85);color:var(--gold);
+  font-family:'Jost',sans-serif;font-size:var(--fs-xs);font-weight:300;
+  letter-spacing:.18em;text-transform:uppercase;
+  cursor:pointer;text-decoration:none;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:border-color .3s,background .3s,transform .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.back-btn:hover{border-color:rgba(212,175,102,.5);background:rgba(212,175,102,.08);transform:translateY(-1px);}
+.back-btn svg{width:14px;height:14px;fill:none;stroke:var(--gold);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+/* PAGE */
+.page{
+  position:relative;z-index:10;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:clamp(80px,12vh,120px) var(--sp-md) clamp(50px,8vh,90px);
+  gap:var(--sp-lg);
+}
+
+/* header */
+.header{
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:var(--sp-sm);
+  animation:riseIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes riseIn{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+.eyebrow-row{display:flex;align-items:center;gap:clamp(10px,2.5vw,20px);}
+.eline{height:1px;width:clamp(24px,6vw,60px);background:linear-gradient(90deg,transparent,var(--gold));}
+.eline.r{background:linear-gradient(90deg,var(--gold),transparent);}
+.edot{color:var(--gold);font-size:.9rem;filter:drop-shadow(0 0 5px var(--gold));}
+.eyebrow{font-size:var(--fs-xs);font-weight:200;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:var(--fs-xl);font-weight:300;color:var(--cream);line-height:1.1;}
+.page-title em{font-style:italic;color:var(--gold-lt);text-shadow:0 0 28px rgba(212,175,102,.4);}
+.page-sub{font-size:var(--fs-xs);font-weight:200;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;line-height:1.8;text-align:center;max-width:320px;}
+
+/* ══ JAR SECTION ══ */
+.jar-section{
+  display:flex;flex-direction:column;align-items:center;gap:clamp(20px,4vw,36px);
+  animation:riseIn .9s cubic-bezier(.16,1,.3,1) .2s both;
+  width:100%;max-width:500px;
+}
+
+/* counter */
+.counter{
+  font-size:var(--fs-xs);letter-spacing:.25em;text-transform:uppercase;
+  color:var(--muted);font-weight:200;
+}
+.counter span{color:var(--gold);}
+
+/* ══ THE JAR ══ */
+.jar-wrap{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  filter:drop-shadow(0 20px 60px rgba(212,175,102,.12));
+  transition:transform .2s ease;
+  user-select:none;
+}
+.jar-wrap:hover{transform:scale(1.03);}
+.jar-wrap:active{transform:scale(0.97);}
+
+/* jar SVG glow pulse */
+.jar-wrap::after{
+  content:'';
+  position:absolute;
+  width:120%;height:60%;
+  bottom:-10%;left:-10%;
+  background:radial-gradient(ellipse,rgba(212,175,102,.15) 0%,transparent 70%);
+  border-radius:50%;
+  animation:jarGlow 3s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes jarGlow{
+  0%,100%{opacity:.5;transform:scaleX(1);}
+  50%{opacity:1;transform:scaleX(1.1);}
+}
+
+/* jar shake animation */
+.jar-wrap.shake{animation:jarShake .5s cubic-bezier(.36,.07,.19,.97);}
+@keyframes jarShake{
+  0%,100%{transform:rotate(0);}
+  15%{transform:rotate(-8deg) scale(1.04);}
+  30%{transform:rotate(8deg) scale(1.04);}
+  45%{transform:rotate(-6deg);}
+  60%{transform:rotate(6deg);}
+  75%{transform:rotate(-3deg);}
+  90%{transform:rotate(3deg);}
+}
+
+/* tap hint */
+.tap-hint{
+  font-size:var(--fs-xs);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);font-weight:200;
+  display:flex;align-items:center;gap:8px;
+  animation:blink 2.5s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:.4;}50%{opacity:1;}}
+.tap-hint::before,.tap-hint::after{content:'✦';color:var(--gold);font-size:.6rem;}
+
+/* ══ PROMISE CARD ══ */
+.promise-card{
+  width:100%;
+  background:linear-gradient(160deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.015) 100%);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:clamp(24px,4vw,40px) clamp(20px,4vw,36px);
+  box-shadow:0 0 0 1px rgba(0,0,0,.4),0 30px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(212,175,102,.08);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(30px) scale(.96);
+  transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.promise-card.show{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}
+.promise-card::before,.promise-card::after{
+  content:'';position:absolute;
+  width:24px;height:24px;
+  border-color:rgba(212,175,102,.2);border-style:solid;
+}
+.promise-card::before{top:12px;left:12px;border-width:1px 0 0 1px;}
+.promise-card::after{bottom:12px;right:12px;border-width:0 1px 1px 0;}
+
+.promise-num{
+  font-size:var(--fs-xs);letter-spacing:.3em;text-transform:uppercase;
+  color:var(--gold);font-weight:200;opacity:.7;
+  margin-bottom:clamp(10px,2vw,16px);
+  display:flex;align-items:center;gap:8px;
+}
+.promise-num::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(212,175,102,.3),transparent);}
+
+.promise-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.05rem,2.8vw,1.35rem);
+  font-weight:300;font-style:italic;
+  color:var(--cream);line-height:1.85;
+}
+
+.promise-icon{
+  margin-top:clamp(14px,2.5vw,22px);
+  font-size:clamp(1.4rem,3.5vw,1.8rem);
+  opacity:.8;
+}
+
+/* shimmer sweep on new card */
+.card-shimmer{
+  position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.06) 50%,transparent 70%);
+  transform:translateX(-120%);
+  animation:shimmerSweep .8s ease .1s forwards;
+  pointer-events:none;
+}
+@keyframes shimmerSweep{to{transform:translateX(130%);}}
+
+/* all done state */
+.all-done{
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:var(--sp-sm);
+  opacity:0;transform:translateY(20px);
+  transition:opacity .7s ease,transform .7s ease;
+  pointer-events:none;
+}
+.all-done.show{opacity:1;transform:translateY(0);pointer-events:all;}
+.all-done-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.4rem,4vw,2rem);
+  font-weight:300;font-style:italic;color:var(--gold-lt);
+}
+.all-done-sub{font-size:var(--fs-xs);letter-spacing:.15em;color:var(--muted);font-weight:200;line-height:1.8;}
+.restart-btn{
+  margin-top:8px;padding:10px 24px;
+  border:1px solid rgba(212,175,102,.25);border-radius:99px;
+  background:rgba(212,175,102,.06);color:var(--gold);
+  font-family:'Jost',sans-serif;font-size:var(--fs-xs);
+  letter-spacing:.2em;text-transform:uppercase;
+  cursor:pointer;transition:border-color .3s,background .3s,transform .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.restart-btn:hover{border-color:rgba(212,175,102,.5);background:rgba(212,175,102,.1);transform:translateY(-1px);}
+
+/* floating promise text animation */
+.float-text{
+  position:fixed;
+  pointer-events:none;
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:clamp(.7rem,1.5vw,.85rem);
+  color:var(--gold);
+  opacity:0;
+  z-index:50;
+  white-space:nowrap;
+  animation:floatPromise 1.8s ease forwards;
+}
+@keyframes floatPromise{
+  0%{opacity:0;transform:translateY(0) scale(.8);}
+  20%{opacity:.7;transform:translateY(-20px) scale(1);}
+  80%{opacity:.4;transform:translateY(-70px) scale(.95);}
+  100%{opacity:0;transform:translateY(-100px) scale(.9);}
+}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:480px){
+  .page{padding-top:72px;}
+  .back-btn{padding:8px 12px;font-size:.55rem;}
+  .promise-text{font-size:1rem;}
+}
+@media(min-width:1200px){
+  .jar-section{max-width:580px;}
+}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="particles" id="particles"></div>
+
+<a class="back-btn" href="nav.html">
+  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  Back
+</a>
+
+<div class="page">
+
+  <div class="header">
+    <div class="eyebrow-row">
+      <div class="eline"></div><span class="edot">✦</span>
+      <span class="eyebrow">From Rakshith, With Love</span>
+      <span class="edot">✦</span><div class="eline r"></div>
+    </div>
+    <h1 class="page-title">A Jar of <em>Promises</em></h1>
+    <p class="page-sub">10 promises sealed with love — shake the jar to reveal each one 🫙</p>
+  </div>
+
+  <div class="jar-section">
+
+    <!-- JAR -->
+    <div class="jar-wrap" id="jarWrap" onclick="shakeJar()">
+      <svg width="200" height="260" viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="jarBody" cx="35%" cy="40%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
+            <stop offset="60%" stop-color="rgba(212,175,102,0.06)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.3)"/>
+          </radialGradient>
+          <linearGradient id="jarLid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c8a04a"/>
+            <stop offset="50%" stop-color="#d4af66"/>
+            <stop offset="100%" stop-color="#a07830"/>
+          </linearGradient>
+          <linearGradient id="jarShine" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </linearGradient>
+          <linearGradient id="noteGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f5ede0"/>
+            <stop offset="100%" stop-color="#e8d8c0"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <clipPath id="jarClip">
+            <path d="M38 80 Q30 90 28 120 L25 220 Q25 240 100 240 Q175 240 175 220 L172 120 Q170 90 162 80 Z"/>
+          </clipPath>
+        </defs>
+
+        <!-- jar glow underneath -->
+        <ellipse cx="100" cy="245" rx="70" ry="14" fill="rgba(212,175,102,0.12)" filter="url(#glow)"/>
+
+        <!-- jar body -->
+        <path d="M38 80 Q30 90 28 120 L25 220 Q25 240 100 240 Q175 240 175 220 L172 120 Q170 90 162 80 Z"
+              fill="url(#jarBody)" stroke="rgba(212,175,102,0.35)" stroke-width="1.5"/>
+
+        <!-- glass shine left -->
+        <path d="M42 95 Q36 110 34 140 L34 190" stroke="rgba(255,255,255,0.18)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <!-- glass shine right subtle -->
+        <path d="M158 95 Q164 110 166 140" stroke="rgba(255,255,255,0.06)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+        <!-- jar shine overlay -->
+        <path d="M38 80 Q30 90 28 120 L25 220 Q25 240 100 240 Q175 240 175 220 L172 120 Q170 90 162 80 Z"
+              fill="url(#jarShine)" opacity="0.5"/>
+
+        <!-- little rolled notes inside -->
+        <g clip-path="url(#jarClip)" opacity="0.85" id="notesGroup">
+          <!-- note 1 -->
+          <rect x="48" y="155" width="32" height="22" rx="3" fill="url(#noteGrad)" transform="rotate(-12,64,166)"/>
+          <line x1="52" y1="162" x2="76" y2="162" stroke="rgba(212,175,102,0.5)" stroke-width="1" transform="rotate(-12,64,166)"/>
+          <line x1="52" y1="167" x2="72" y2="167" stroke="rgba(212,175,102,0.3)" stroke-width="1" transform="rotate(-12,64,166)"/>
+          <!-- note 2 -->
+          <rect x="80" y="160" width="30" height="20" rx="3" fill="url(#noteGrad)" transform="rotate(5,95,170)"/>
+          <line x1="84" y1="167" x2="106" y2="167" stroke="rgba(212,175,102,0.5)" stroke-width="1" transform="rotate(5,95,170)"/>
+          <!-- note 3 -->
+          <rect x="115" y="150" width="28" height="21" rx="3" fill="url(#noteGrad)" transform="rotate(-8,129,160)"/>
+          <line x1="118" y1="158" x2="140" y2="158" stroke="rgba(212,175,102,0.5)" stroke-width="1" transform="rotate(-8,129,160)"/>
+          <!-- note 4 -->
+          <rect x="55" y="185" width="26" height="19" rx="3" fill="url(#noteGrad)" transform="rotate(10,68,194)"/>
+          <!-- note 5 -->
+          <rect x="95" y="188" width="30" height="20" rx="3" fill="url(#noteGrad)" transform="rotate(-5,110,198)"/>
+          <!-- note 6 -->
+          <rect x="130" y="178" width="26" height="19" rx="3" fill="url(#noteGrad)" transform="rotate(15,143,187)"/>
+          <!-- note 7 -->
+          <rect x="60" y="210" width="28" height="18" rx="3" fill="url(#noteGrad)" transform="rotate(-6,74,219)"/>
+          <!-- note 8 -->
+          <rect x="100" y="212" width="26" height="18" rx="3" fill="url(#noteGrad)" transform="rotate(8,113,221)"/>
+          <!-- note 9 -->
+          <rect x="135" y="205" width="24" height="18" rx="3" fill="url(#noteGrad)" transform="rotate(-10,147,214)"/>
+          <!-- note 10 -->
+          <rect x="72" y="130" width="28" height="19" rx="3" fill="url(#noteGrad)" transform="rotate(6,86,139)"/>
+          <!-- gold ribbon on some -->
+          <line x1="64" y1="150" x2="64" y2="178" stroke="rgba(212,175,102,0.4)" stroke-width="1.5" stroke-dasharray="2,2"/>
+          <line x1="110" y1="155" x2="110" y2="185" stroke="rgba(212,175,102,0.3)" stroke-width="1" stroke-dasharray="2,2"/>
+        </g>
+
+        <!-- jar neck -->
+        <rect x="58" y="60" width="84" height="24" rx="4"
+              fill="rgba(20,12,8,0.6)" stroke="rgba(212,175,102,0.3)" stroke-width="1.5"/>
+        <rect x="62" y="63" width="76" height="18" rx="3"
+              fill="rgba(255,255,255,0.04)"/>
+        <!-- neck shine -->
+        <line x1="66" y1="65" x2="66" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- lid -->
+        <rect x="52" y="40" width="96" height="26" rx="6"
+              fill="url(#jarLid)" stroke="rgba(255,200,80,0.4)" stroke-width="1"/>
+        <!-- lid shine -->
+        <rect x="58" y="44" width="40" height="8" rx="3"
+              fill="rgba(255,255,255,0.2)" opacity="0.7"/>
+        <!-- lid knob -->
+        <rect x="88" y="32" width="24" height="12" rx="6"
+              fill="url(#jarLid)" stroke="rgba(255,200,80,0.35)" stroke-width="1"/>
+        <rect x="93" y="34" width="10" height="5" rx="2.5"
+              fill="rgba(255,255,255,0.2)"/>
+
+        <!-- heart on jar -->
+        <text x="100" y="125" text-anchor="middle" font-size="22" opacity="0.35" filter="url(#glow)">💛</text>
+
+        <!-- label on jar -->
+        <rect x="55" y="95" width="90" height="40" rx="4"
+              fill="rgba(245,237,224,0.06)" stroke="rgba(212,175,102,0.2)" stroke-width="1"/>
+        <text x="100" y="112" text-anchor="middle" font-family="Cormorant Garamond, serif"
+              font-size="9" fill="rgba(212,175,102,0.7)" font-style="italic" letter-spacing="1">Promises</text>
+        <text x="100" y="126" text-anchor="middle" font-family="Cormorant Garamond, serif"
+              font-size="7" fill="rgba(212,175,102,0.45)" letter-spacing="2">FOR YOU</text>
+      </svg>
+    </div>
+
+    <div class="tap-hint" id="tapHint">Shake the jar</div>
+
+    <!-- PROMISE CARD -->
+    <div class="promise-card" id="promiseCard">
+      <div class="card-shimmer" id="cardShimmer"></div>
+      <div class="promise-num" id="promiseNum">Promise 1</div>
+      <div class="promise-text" id="promiseText"></div>
+      <div class="promise-icon" id="promiseIcon"></div>
+    </div>
+
+    <!-- ALL DONE -->
+    <div class="all-done" id="allDone">
+      <div class="all-done-title">All 10 promises, sealed with love 💛</div>
+      <div class="all-done-sub">Every single one of these is real.<br/>I mean every word, always.</div>
+      <button class="restart-btn" onclick="restart()">✦ Read them again</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PROMISES = [
+  { text: "I promise to always pick up your call, no matter what time it is.", icon: "📞" },
+  { text: "I promise to never let you carry your sadness alone again — you will always have me to share it with.", icon: "🤝" },
+  { text: "I promise to be the brother you deserved from day one, not just when it's convenient.", icon: "💙" },
+  { text: "I promise to never hurt you the way I did before — and if I ever do, I promise to be the first to say sorry.", icon: "🙏" },
+  { text: "I promise to check on you even when you say you're fine, because I know you sometimes aren't.", icon: "🌸" },
+  { text: "I promise to celebrate every small win of yours like it's the biggest thing in the world.", icon: "🎉" },
+  { text: "I promise to never take your presence in my life for granted — not even for a single day.", icon: "⭐" },
+  { text: "I promise to always remind you how strong you are, especially on the days you forget.", icon: "🔥" },
+  { text: "I promise to be honest with you always — even when the truth is hard to say.", icon: "💎" },
+  { text: "I promise that no matter where life takes us, you will never lose me — I am yours, always.", icon: "💛" },
+];
+
+let current = 0;
+let revealed = [];
+let isAnimating = false;
+
+/* floating particles */
+(function(){
+  const c = document.getElementById('particles');
+  for(let i=0;i<24;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    p.style.setProperty('--dur',(5+Math.random()*7)+'s');
+    p.style.setProperty('--delay',(Math.random()*10)+'s');
+    p.style.left=(Math.random()*100)+'%';
+    p.style.bottom=(Math.random()*25)+'%';
+    const s=(1+Math.random()*2.5)+'px';
+    p.style.width=s; p.style.height=s;
+    c.appendChild(p);
+  }
+})();
+
+function shakeJar(){
+  if(isAnimating) return;
+  if(current >= PROMISES.length){
+    // all done — just shimmy jar
+    triggerShake();
+    return;
+  }
+
+  isAnimating = true;
+  triggerShake();
+
+  setTimeout(()=>{
+    showPromise(current);
+    current++;
+    isAnimating = false;
+
+    if(current >= PROMISES.length){
+      setTimeout(showAllDone, 1200);
+    }
+  }, 520);
+}
+
+function triggerShake(){
+  const jar = document.getElementById('jarWrap');
+  jar.classList.remove('shake');
+  void jar.offsetWidth;
+  jar.classList.add('shake');
+  jar.addEventListener('animationend',()=>jar.classList.remove('shake'),{once:true});
+
+  // spawn floating gold text
+  spawnFloat();
+}
+
+function showPromise(idx){
+  const card = document.getElementById('promiseCard');
+  const numEl = document.getElementById('promiseNum');
+  const textEl = document.getElementById('promiseText');
+  const iconEl = document.getElementById('promiseIcon');
+  const shimmer= document.getElementById('cardShimmer');
+
+  // remove and re-add shimmer
+  shimmer.replaceWith(shimmer.cloneNode());
+
+  numEl.textContent = '✦ Promise';
+  textEl.textContent = PROMISES[idx].text;
+  iconEl.textContent = PROMISES[idx].icon;
+
+  card.classList.remove('show');
+  void card.offsetWidth;
+  card.classList.add('show');
+
+  // hide hint after first
+  if(idx === 0) document.getElementById('tapHint').style.opacity='0.3';
+
+  // update notes in jar (remove one)
+  updateJarNotes(idx);
+}
+
+function updateJarNotes(idx){
+  // fade out notes one by one as promises are revealed
+  const notes = document.querySelectorAll('#notesGroup rect');
+  if(notes[idx]) {
+    notes[idx].style.transition='opacity .4s ease';
+    notes[idx].style.opacity='0.1';
+  }
+}
+
+function showAllDone(){
+  document.getElementById('allDone').classList.add('show');
+  document.getElementById('promiseCard').style.opacity='0.3';
+  document.getElementById('tapHint').style.display='none';
+
+  // celebrate
+  confetti();
+}
+
+function restart(){
+  current = 0;
+  document.getElementById('allDone').classList.remove('show');
+  document.getElementById('promiseCard').style.opacity='';
+  document.getElementById('promiseCard').classList.remove('show');
+  document.getElementById('tapHint').style.opacity='';
+  document.getElementById('tapHint').style.display='';
+
+  // restore notes
+  document.querySelectorAll('#notesGroup rect').forEach(r=>{
+    r.style.opacity='';
+  });
+}
+
+function spawnFloat(){
+  const words = ['💛','✦','always','forever','I promise','🌸','💙'];
+  const word = words[Math.floor(Math.random()*words.length)];
+  const el = document.createElement('div');
+  el.className='float-text';
+  el.textContent = word;
+  el.style.left = (30+Math.random()*40)+'%';
+  el.style.top  = (40+Math.random()*20)+'%';
+  el.style.fontSize = (.65+Math.random()*.4)+'rem';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1900);
+}
+
+/* confetti */
+function confetti(){
+  const cel = document.createElement('canvas');
+  cel.style.cssText='position:fixed;inset:0;z-index:99;pointer-events:none;';
+  cel.width=window.innerWidth; cel.height=window.innerHeight;
+  document.body.appendChild(cel);
+  const cctx=cel.getContext('2d');
+  const colors=['#d4af66','#f0d080','#c8566a','#ffffff','#ffd6e7'];
+  const ps=[];
+  for(let i=0;i<100;i++){
+    ps.push({
+      x:Math.random()*cel.width, y:-10-Math.random()*150,
+      w:5+Math.random()*8, h:3+Math.random()*5,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      rot:Math.random()*Math.PI*2, rs:(Math.random()-.5)*.16,
+      vx:(Math.random()-.5)*3, vy:1.5+Math.random()*2.5, alpha:1
+    });
+  }
+  let frame=0;
+  function loop(){
+    cctx.clearRect(0,0,cel.width,cel.height);
+    ps.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.04; p.rot+=p.rs;
+      if(frame>70) p.alpha-=.016;
+      if(p.alpha<=0) return;
+      cctx.save();
+      cctx.globalAlpha=Math.max(0,p.alpha);
+      cctx.translate(p.x,p.y); cctx.rotate(p.rot);
+      cctx.fillStyle=p.color;
+      cctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      cctx.restore();
+    });
+    frame++;
+    if(frame<150) requestAnimationFrame(loop);
+    else cel.remove();
+  }
+  loop();
+}
+</script>
+</body>
+</html>
